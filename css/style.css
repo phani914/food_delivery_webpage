@@ -94,10 +94,25 @@ body:has(.theme-toggle:checked) .navbar {
 
 .brand {
   order: 1;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.8rem;
   font-size: 24px;
   font-weight: 800;
   color: var(--brand);
   letter-spacing: 0;
+  text-decoration: none;
+}
+
+.brand-logo {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--brand);
+}
+
+.brand-logo svg {
+  display: block;
 }
 
 .nav-links {
@@ -255,7 +270,7 @@ body:has(.theme-toggle:checked) .navbar {
   padding: 72px 7%;
   background:
     linear-gradient(115deg, rgba(23, 35, 37, 0.78), rgba(23, 35, 37, 0.42) 52%, rgba(230, 75, 53, 0.18)),
-    url("https://images.unsplash.com/photo-1504674900247-0877df9cc836?auto=format&fit=crop&w=1400&q=80");
+    url("https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?auto=format&fit=crop&w=1400&q=80");
   background-position: center;
   background-size: cover;
   color: #ffffff;
