@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Login and Register - FoodExpress</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <header class="navbar">
+    <a class="brand" href="index.html">FoodExpress</a>
+    <input class="theme-toggle" type="checkbox" id="theme-toggle" aria-label="Toggle dark mode">
+    <label class="theme-toggle-label" for="theme-toggle" title="Toggle dark mode">
+      <span class="toggle-icon sun">☀</span>
+      <span class="toggle-icon moon">☾</span>
+    </label>
+    <input class="nav-toggle" type="checkbox" id="nav-toggle" aria-label="Toggle navigation menu">
+    <label class="nav-toggle-label" for="nav-toggle" aria-hidden="true">
+      <span></span>
+      <span></span>
+      <span></span>
+    </label>
+    <nav class="nav-links" aria-label="Primary navigation">
+      <a href="index.html">Home</a>
+      <a href="index.html#menu">Food Menu</a>
+      <a href="index.html#restaurants">Restaurants</a>
+      <a href="index.html#cart">Cart</a>
+      <a href="index.html#checkout">Checkout</a>
+      <a class="nav-account" href="account.html">Login / Register</a>
+    </nav>
+  </header>
+
+  <main>
+    <section class="account-hero">
+      <div>
+        <span class="eyebrow">Your FoodExpress Account</span>
+        <h1>Login or create your account.</h1>
+        <p>Access saved addresses, faster checkout, order history, and exclusive delivery offers from one simple page.</p>
+      </div>
+    </section>
+
+    <section class="section account-section">
+      <div class="account-layout">
+        <article class="account-card">
+          <h2>Login</h2>
+          <p>Welcome back. Enter your details to continue ordering.</p>
+          <form class="account-form">
+            <div class="form-group">
+              <label for="login-email">Email Address</label>
+              <input type="email" id="login-email" name="login-email" placeholder="you@example.com">
+            </div>
+
+            <div class="form-group">
+              <label for="login-password">Password</label>
+              <input type="password" id="login-password" name="login-password" placeholder="Enter password">
+            </div>
+
+            <div class="form-row">
+              <label class="check-option">
+                <input type="checkbox" name="remember">
+                Remember me
+              </label>
+              <a href="#">Forgot password?</a>
+            </div>
+
+            <button class="button primary" type="button">Login</button>
+          </form>
+        </article>
+
+        <article class="account-card">
+          <h2>Register</h2>
+          <p>Create an account for faster checkout and saved delivery details.</p>
+          <form class="account-form">
+            <div class="form-group">
+              <label for="register-name">Full Name</label>
+              <input type="text" id="register-name" name="register-name" placeholder="Alex Morgan">
+            </div>
+
+            <div class="form-group">
+              <label for="register-email">Email Address</label>
+              <input type="email" id="register-email" name="register-email" placeholder="you@example.com">
+            </div>
+
+            <div class="form-group">
+              <label for="register-phone">Phone Number</label>
+              <input type="tel" id="register-phone" name="register-phone" placeholder="+91 98765 43210">
+            </div>
+
+            <div class="form-group">
+              <label for="register-password">Create Password</label>
+              <input type="password" id="register-password" name="register-password" placeholder="Create password">
+            </div>
+
+            <label class="check-option">
+              <input type="checkbox" name="terms">
+              I agree to the Terms of Service and Privacy Policy
+            </label>
+
+            <button class="button primary" type="button">Create Account</button>
+          </form>
+        </article>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer" id="footer">
+    <div class="footer-grid">
+      <div>
+        <h3>FoodExpress</h3>
+        <p>Fresh food, simple ordering, and fast delivery from trusted local restaurants.</p>
+      </div>
+
+      <div>
+        <h4>Quick Links</h4>
+        <a href="index.html#menu">Food Menu</a>
+        <a href="index.html#restaurants">Restaurants</a>
+        <a href="index.html#cart">Cart</a>
+        <a href="index.html#checkout">Checkout</a>
+      </div>
+
+      <div>
+        <h4>Contact</h4>
+        <p>Email: support@foodexpress.in</p>
+        <p>Phone: +91 98765 43210</p>
+        <p>Location: Bengaluru, India</p>
+      </div>
+
+      <div>
+        <h4>Delivery Hours</h4>
+        <p>Monday - Friday: 9:00 AM - 11:00 PM</p>
+        <p>Saturday - Sunday: 10:00 AM - 12:00 AM</p>
+        <div class="social-links">
+          <a href="#">Instagram</a>
+          <a href="#">Facebook</a>
+          <a href="#">Twitter</a>
+        </div>
+      </div>
+    </div>
+
+    <div class="footer-bottom">
+      <p>© 2026 FoodExpress. All rights reserved.</p>
+      <p>Privacy Policy | Terms of Service</p>
+    </div>
+  </footer>
+</body>
+</html>
