@@ -4,6 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Tasty Treats | Fresh meals delivered</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
   <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
@@ -35,7 +36,7 @@
       <a href="#">Home</a>
       <a href="#menu">Food Menu</a>
       <a href="#restaurants">Restaurants</a>
-      <a href="#cart">Cart</a>
+      <a href="#cart">Cart <span id="cart-count-badge" class="cart-badge"></span></a>
       <a href="#checkout">Checkout</a>
       <a href="#footer">Contact</a>
       <a class="nav-account" href="account.html">Login / Register</a>
@@ -87,17 +88,25 @@
         <p>Choose from quick bites, comfort food, and fresh bowls ready for delivery.</p>
       </div>
 
-      <nav class="category-nav" aria-label="Food category navigation">
-        <a href="#menu">All Items</a>
-        <a href="#pizza">Pizza</a>
-        <a href="#burgers">Burgers</a>
-        <a href="#bowls">Bowls</a>
-        <a href="#pasta">Pasta</a>
-        <a href="#desserts">Desserts</a>
-      </nav>
+      <div class="menu-filter" aria-label="Menu filters">
+        <div class="menu-search">
+          <label for="menu-search">Search menu</label>
+          <input type="search" id="menu-search" placeholder="Search dishes, cuisines, or tags">
+        </div>
 
-      <div class="grid">
-        <article class="menu-card" id="pizza">
+        <div class="category-nav" role="group" aria-label="Filter by food category">
+          <button class="filter-button active" type="button" data-filter="all" aria-pressed="true">All Items</button>
+          <button class="filter-button" type="button" data-filter="pizza" aria-pressed="false">Pizza</button>
+          <button class="filter-button" type="button" data-filter="burgers" aria-pressed="false">Burgers</button>
+          <button class="filter-button" type="button" data-filter="bowls" aria-pressed="false">Bowls</button>
+          <button class="filter-button" type="button" data-filter="pasta" aria-pressed="false">Pasta</button>
+          <button class="filter-button" type="button" data-filter="desserts" aria-pressed="false">Desserts</button>
+          <button class="filter-button" type="button" data-filter="snacks" aria-pressed="false">Snacks</button>
+        </div>
+      </div>
+
+      <div class="grid menu-grid row g-4">
+        <article class="menu-card col-12 col-md-6 col-xl-4" id="pizza" data-category="pizza" data-keywords="margherita pizza italian tomato mozzarella basil">
           <img src="https://images.unsplash.com/photo-1565299624946-b28f40a0ae38?auto=format&fit=crop&w=700&q=80" alt="Pizza with cheese and tomatoes">
           <div class="card-body">
             <div class="card-row">
@@ -109,7 +118,7 @@
           </div>
         </article>
 
-        <article class="menu-card" id="bowls">
+        <article class="menu-card col-12 col-md-6 col-xl-4" id="bowls" data-category="bowls" data-keywords="power rice bowl healthy vegetables chickpeas tahini">
           <img src="https://images.unsplash.com/photo-1546069901-ba9599a7e63c?auto=format&fit=crop&w=700&q=80" alt="Healthy rice bowl with vegetables">
           <div class="card-body">
             <div class="card-row">
@@ -121,7 +130,7 @@
           </div>
         </article>
 
-        <article class="menu-card" id="burgers">
+        <article class="menu-card col-12 col-md-6 col-xl-4" id="burgers" data-category="burgers" data-keywords="classic burger fast food cheddar patty sauce">
           <img src="https://images.unsplash.com/photo-1568901346375-23c9450c58cd?auto=format&fit=crop&w=700&q=80" alt="Burger with fries">
           <div class="card-body">
             <div class="card-row">
@@ -133,7 +142,7 @@
           </div>
         </article>
 
-        <article class="menu-card">
+        <article class="menu-card col-12 col-md-6 col-xl-4" data-category="burgers" data-keywords="smash burger popular double patty pickles onions sauce">
           <img src="https://images.unsplash.com/photo-1550547660-d9450f859349?auto=format&fit=crop&w=700&q=80" alt="Loaded burger close-up">
           <div class="card-body">
             <div class="card-row">
@@ -145,7 +154,7 @@
           </div>
         </article>
 
-        <article class="menu-card" id="pasta">
+        <article class="menu-card col-12 col-md-6 col-xl-4" id="pasta" data-category="pasta" data-keywords="creamy pasta comfort penne garlic parmesan herbs">
           <img src="https://images.unsplash.com/photo-1617196034796-73dfa7b1fd56?auto=format&fit=crop&w=700&q=80" alt="Plate of pasta">
           <div class="card-body">
             <div class="card-row">
@@ -157,7 +166,7 @@
           </div>
         </article>
 
-        <article class="menu-card">
+        <article class="menu-card col-12 col-md-6 col-xl-4" data-category="bowls" data-keywords="sushi platter japanese salmon avocado cucumber soy wasabi">
           <img src="https://images.unsplash.com/photo-1553621042-f6e147245754?auto=format&fit=crop&w=700&q=80" alt="Sushi rolls on a plate">
           <div class="card-body">
             <div class="card-row">
@@ -169,7 +178,7 @@
           </div>
         </article>
 
-        <article class="menu-card">
+        <article class="menu-card col-12 col-md-6 col-xl-4" data-category="bowls" data-keywords="grilled chicken plate rice salad smoky dip">
           <img src="https://images.unsplash.com/photo-1600891964599-f61ba0e24092?auto=format&fit=crop&w=700&q=80" alt="Grilled chicken meal with sides">
           <div class="card-body">
             <div class="card-row">
@@ -181,7 +190,7 @@
           </div>
         </article>
 
-        <article class="menu-card">
+        <article class="menu-card col-12 col-md-6 col-xl-4" data-category="bowls" data-keywords="garden salad fresh greens tomatoes olives sprouts vinaigrette">
           <img src="https://images.unsplash.com/photo-1512621776951-a57141f2eefd?auto=format&fit=crop&w=700&q=80" alt="Fresh salad bowl">
           <div class="card-body">
             <div class="card-row">
@@ -193,7 +202,7 @@
           </div>
         </article>
 
-        <article class="menu-card">
+        <article class="menu-card col-12 col-md-6 col-xl-4" data-category="bowls" data-keywords="spicy noodle bowl asian vegetables chili sesame">
           <img src="https://images.unsplash.com/photo-1569718212165-3a8278d5f624?auto=format&fit=crop&w=700&q=80" alt="Noodle bowl with toppings">
           <div class="card-body">
             <div class="card-row">
@@ -205,7 +214,7 @@
           </div>
         </article>
 
-        <article class="menu-card">
+        <article class="menu-card col-12 col-md-6 col-xl-4" data-category="snacks" data-keywords="crispy samosa chaat indian snack yogurt chutney sev">
           <img src="https://images.unsplash.com/photo-1601050690597-df0568f70950?auto=format&fit=crop&w=700&q=80" alt="Indian samosas with chutney">
           <div class="card-body">
             <div class="card-row">
@@ -217,7 +226,7 @@
           </div>
         </article>
 
-        <article class="menu-card" id="desserts">
+        <article class="menu-card col-12 col-md-6 col-xl-4" id="desserts" data-category="desserts" data-keywords="chocolate brownie dessert ice cream nuts sauce">
           <img src="https://images.unsplash.com/photo-1563805042-7684c019e1cb?auto=format&fit=crop&w=700&q=80" alt="Chocolate dessert with ice cream">
           <div class="card-body">
             <div class="card-row">
@@ -229,7 +238,7 @@
           </div>
         </article>
 
-        <article class="menu-card">
+        <article class="menu-card col-12 col-md-6 col-xl-4" data-category="snacks" data-keywords="club sandwich snack grilled vegetables cheese lettuce mayo fries">
           <img src="https://images.unsplash.com/photo-1571091718767-18b5b1457add?auto=format&fit=crop&w=700&q=80" alt="Sandwich with vegetables and fries">
           <div class="card-body">
             <div class="card-row">
@@ -241,6 +250,7 @@
           </div>
         </article>
       </div>
+      <p class="menu-empty" hidden>No menu items match your filters.</p>
     </section>
 
     <section class="section alt" id="restaurants">
@@ -249,8 +259,8 @@
         <p>Featured delivery partners with strong ratings, quick prep times, and customer favorites.</p>
       </div>
 
-      <div class="grid">
-        <article class="restaurant-card">
+      <div class="grid restaurant-grid row g-4">
+        <article class="restaurant-card col-12 col-md-6 col-xl-4">
           <img src="https://images.unsplash.com/photo-1555396273-367ea4eb4db5?auto=format&fit=crop&w=700&q=80" alt="Restaurant dining area">
           <div class="card-body">
             <div class="card-row">
@@ -266,7 +276,7 @@
           </div>
         </article>
 
-        <article class="restaurant-card">
+        <article class="restaurant-card col-12 col-md-6 col-xl-4">
           <img src="https://images.unsplash.com/photo-1514933651103-005eec06c04b?auto=format&fit=crop&w=700&q=80" alt="Warm restaurant interior">
           <div class="card-body">
             <div class="card-row">
@@ -282,7 +292,7 @@
           </div>
         </article>
 
-        <article class="restaurant-card">
+        <article class="restaurant-card col-12 col-md-6 col-xl-4">
           <img src="https://images.unsplash.com/photo-1552566626-52f8b828add9?auto=format&fit=crop&w=700&q=80" alt="Restaurant tables and chairs">
           <div class="card-body">
             <div class="card-row">
@@ -306,8 +316,8 @@
         <p>A static cart preview showing selected items, quantities, pricing, and order total.</p>
       </div>
 
-      <div class="order-layout">
-        <aside class="cart-box">
+      <div class="order-layout row g-4">
+        <aside class="cart-box col-12 col-lg-5">
           <h3>Your Cart</h3>
           <div class="cart-item">
             <div>
@@ -336,8 +346,9 @@
           </div>
         </aside>
 
-        <section class="checkout-box" id="checkout">
+        <section class="checkout-box col-12 col-lg-7" id="checkout">
           <h3>Checkout Form</h3>
+          <div id="checkout-summary" class="checkout-summary" aria-live="polite"></div>
           <form class="checkout-form">
             <div class="form-group">
               <label for="full-name">Full Name</label>
@@ -378,7 +389,7 @@
             </div>
 
             <div class="form-group full">
-              <button class="button primary" type="button">Place Order</button>
+              <button id="place-order" class="button primary" type="button">Place Order</button>
             </div>
           </form>
           <p class="checkout-note">This checkout form is static for now and does not process orders.</p>
@@ -426,5 +437,6 @@
       <p>Privacy Policy | Terms of Service</p>
     </div>
   </footer>
+  <script src="js/cart.js"></script>
 </body>
 </html>
