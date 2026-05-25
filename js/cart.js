@@ -117,7 +117,7 @@
     const totalValue = document.createElement('strong'); totalValue.textContent = `₹${getTotal(cart)}`;
     totalRow.appendChild(totalLabel); totalRow.appendChild(totalValue);
     aside.appendChild(totalRow);
-    const checkoutWrap = document.createElement('div'); checkoutWrap.className = 'cart-actions'; checkoutWrap.innerHTML = '<a href="cart.html" class="button primary">View Cart / Checkout</a>';
+    const checkoutWrap = document.createElement('div'); checkoutWrap.className = 'cart-actions'; checkoutWrap.innerHTML = '<a href="cart.html" class="button primary">View Cart</a>';
     aside.appendChild(checkoutWrap);
   }
 
@@ -129,25 +129,37 @@
     if(!summaryEl) return;
     const cart = loadCart();
     summaryEl.innerHTML = '';
-    const heading = document.createElement('h4'); heading.textContent = 'Order Summary'; heading.style.marginTop='0'; summaryEl.appendChild(heading);
+    const heading = document.createElement('div');
+    heading.className = 'summary-heading';
+    heading.innerHTML = '<span class="eyebrow">Order summary</span><h3>Your bag</h3>';
+    summaryEl.appendChild(heading);
     if(cart.length===0){
-      const p = document.createElement('p'); p.textContent = 'Your cart is empty.'; p.style.color='var(--muted)'; summaryEl.appendChild(p); return;
+      const empty = document.createElement('div');
+      empty.className = 'cart-empty-state';
+      empty.innerHTML = `
+        <div class="cart-empty-icon" aria-hidden="true">+</div>
+        <strong>Your cart is empty</strong>
+        <span>Add a few favorites before placing an order.</span>
+        <a href="index.html#menu" class="button primary">Browse Menu</a>
+      `;
+      summaryEl.appendChild(empty);
+      return;
     }
     const list = document.createElement('div'); list.className = 'checkout-list';
     cart.forEach(it=>{
-      const row = document.createElement('div'); row.style.display='flex'; row.style.justifyContent='space-between'; row.style.gap='12px'; row.style.marginBottom='8px';
-      const left = document.createElement('div'); left.style.display='flex'; left.style.gap='10px'; left.style.alignItems='center';
-      if(it.image){ const im = document.createElement('img'); im.src=it.image; im.alt=it.title; im.style.width='44px'; im.style.height='34px'; im.style.objectFit='cover'; im.style.borderRadius='6px'; left.appendChild(im); }
-      const t = document.createElement('div'); t.innerHTML = `<strong>${it.title}</strong><div style="color:var(--muted);font-size:13px">Qty: ${it.qty}</div>`; left.appendChild(t);
-      const right = document.createElement('div'); right.innerHTML = `<strong>${formatCurrency(it.price * it.qty)}</strong>`;
+      const row = document.createElement('div'); row.className = 'checkout-summary-item';
+      const left = document.createElement('div'); left.className = 'checkout-summary-info';
+      if(it.image){ const im = document.createElement('img'); im.src=it.image; im.alt=it.title; left.appendChild(im); }
+      const t = document.createElement('div'); t.innerHTML = `<strong>${it.title}</strong><span>Qty: ${it.qty}</span>`; left.appendChild(t);
+      const right = document.createElement('strong'); right.textContent = formatCurrency(it.price * it.qty);
       row.appendChild(left); row.appendChild(right); list.appendChild(row);
     });
     summaryEl.appendChild(list);
     const subtotal = getTotal(cart);
     const delivery = 49;
-    const subRow = document.createElement('div'); subRow.style.display='flex'; subRow.style.justifyContent='space-between'; subRow.style.marginTop='8px'; subRow.innerHTML = `<div style="color:var(--muted)">Subtotal</div><div>${formatCurrency(subtotal)}</div>`;
-    const delRow = document.createElement('div'); delRow.style.display='flex'; delRow.style.justifyContent='space-between'; delRow.innerHTML = `<div style="color:var(--muted)">Delivery</div><div>${formatCurrency(delivery)}</div>`;
-    const totRow = document.createElement('div'); totRow.className='cart-total'; totRow.style.display='flex'; totRow.style.justifyContent='space-between'; totRow.style.marginTop='8px'; totRow.innerHTML = `<strong>Total</strong><strong>${formatCurrency(subtotal + delivery)}</strong>`;
+    const subRow = document.createElement('div'); subRow.className = 'summary-line'; subRow.innerHTML = `<span>Subtotal</span><strong>${formatCurrency(subtotal)}</strong>`;
+    const delRow = document.createElement('div'); delRow.className = 'summary-line'; delRow.innerHTML = `<span>Delivery</span><strong>${formatCurrency(delivery)}</strong>`;
+    const totRow = document.createElement('div'); totRow.className='summary-total'; totRow.innerHTML = `<strong>Total</strong><strong>${formatCurrency(subtotal + delivery)}</strong>`;
     summaryEl.appendChild(subRow); summaryEl.appendChild(delRow); summaryEl.appendChild(totRow);
   }
 
@@ -177,8 +189,11 @@
       const name = qs('#full-name')? qs('#full-name').value.trim() : '';
       const phone = qs('#phone')? qs('#phone').value.trim() : '';
       const address = qs('#address')? qs('#address').value.trim() : '';
+      const payment = qs('#payment')? qs('#payment').value : '';
+      const time = qs('#time')? qs('#time').value : '';
+      const notes = qs('#notes')? qs('#notes').value.trim() : '';
       if(!name || !phone || !address){ if(!confirm('Some contact details are empty. Continue anyway?')) return; }
-      const orderPayload = { customer: { name, phone, address }, items: cart, subtotal: getTotal(cart), delivery: 49, total: getTotal(cart)+49, placedAt: new Date().toISOString() };
+      const orderPayload = { customer: { name, phone, address }, delivery: { time, notes }, payment, items: cart, subtotal: getTotal(cart), deliveryFee: 49, total: getTotal(cart)+49, placedAt: new Date().toISOString() };
 
       // try POST to server endpoint; fallback to preview modal
       try{
@@ -274,24 +289,41 @@
     if(!root) return;
     const cart = loadCart();
     root.innerHTML = '';
-    const title = document.createElement('h1'); title.textContent = 'Your Cart'; root.appendChild(title);
+    const shell = document.createElement('div');
+    shell.className = 'cart-page-layout';
+
     if(cart.length===0){
-      const p = document.createElement('p'); p.textContent = 'Your cart is empty.'; root.appendChild(p); return;
+      const empty = document.createElement('div');
+      empty.className = 'cart-page-empty';
+      empty.innerHTML = `
+        <div class="cart-empty-icon" aria-hidden="true">+</div>
+        <h2>Your cart is waiting.</h2>
+        <p>Add dishes from the menu and come back here to review your order.</p>
+        <a href="index.html#menu" class="button primary">Browse Menu</a>
+      `;
+      root.appendChild(empty);
+      return;
     }
-    const list = document.createElement('div'); list.className = 'cart-list';
+
+    const listPanel = document.createElement('section');
+    listPanel.className = 'cart-list-panel';
+    listPanel.innerHTML = '<div class="panel-heading"><span class="eyebrow">Cart items</span><h2>Your selected dishes</h2></div>';
+
+    const list = document.createElement('div'); list.className = 'cart-page-list';
     cart.forEach(item=>{
-      const row = document.createElement('div'); row.className='cart-item'; row.style.alignItems='center';
-      const left = document.createElement('div'); left.style.display='flex'; left.style.gap='12px'; left.style.alignItems='center';
+      const row = document.createElement('article'); row.className='cart-page-item';
+      const left = document.createElement('div'); left.className = 'cart-page-item-main';
       if(item.image){
-        const img = document.createElement('img'); img.src = item.image; img.alt = item.title; img.style.width='84px'; img.style.height='64px'; img.style.objectFit='cover'; img.style.borderRadius='6px'; left.appendChild(img);
+        const img = document.createElement('img'); img.src = item.image; img.alt = item.title; left.appendChild(img);
       }
-      const meta = document.createElement('div');
+      const meta = document.createElement('div'); meta.className = 'cart-page-item-meta';
       const name = document.createElement('strong'); name.textContent = item.title; meta.appendChild(name);
-      const controls = document.createElement('div'); controls.style.marginTop='8px'; controls.style.display='flex'; controls.style.alignItems='center'; controls.style.gap='8px';
-      const dec = document.createElement('button'); dec.textContent='-'; dec.className='button'; dec.style.minWidth='36px';
-      const qty = document.createElement('span'); qty.textContent = item.qty; qty.style.margin='0 10px'; qty.style.fontWeight='800';
-      const inc = document.createElement('button'); inc.textContent='+'; inc.className='button'; inc.style.minWidth='36px';
-      const remove = document.createElement('button'); remove.textContent='Remove'; remove.className='button'; remove.style.marginLeft='12px';
+      const unit = document.createElement('span'); unit.textContent = `${formatCurrency(item.price)} each`; meta.appendChild(unit);
+      const controls = document.createElement('div'); controls.className = 'quantity-controls';
+      const dec = document.createElement('button'); dec.textContent='-'; dec.className='quantity-button'; dec.type = 'button'; dec.setAttribute('aria-label', `Decrease ${item.title}`);
+      const qty = document.createElement('span'); qty.textContent = item.qty; qty.className = 'quantity-value';
+      const inc = document.createElement('button'); inc.textContent='+'; inc.className='quantity-button'; inc.type = 'button'; inc.setAttribute('aria-label', `Increase ${item.title}`);
+      const remove = document.createElement('button'); remove.textContent='Remove'; remove.className='button ghost remove-button'; remove.type = 'button';
       dec.addEventListener('click', ()=>{ changeQty(item.id, item.qty - 1); renderCartPage(); });
       inc.addEventListener('click', ()=>{ changeQty(item.id, item.qty + 1); renderCartPage(); });
       remove.addEventListener('click', ()=>{ removeFromCart(item.id); renderCartPage(); });
@@ -299,16 +331,33 @@
       meta.appendChild(controls);
       left.appendChild(meta);
 
-      const right = document.createElement('div'); right.style.textAlign='right';
+      const right = document.createElement('div'); right.className = 'cart-page-item-price';
       const price = document.createElement('strong'); price.textContent = `₹${item.price * item.qty}`; right.appendChild(price);
+      const label = document.createElement('span'); label.textContent = 'Item total'; right.appendChild(label);
       row.appendChild(left); row.appendChild(right);
       list.appendChild(row);
     });
-    root.appendChild(list);
-    const total = document.createElement('div'); total.className='cart-total'; total.style.marginTop='16px'; total.innerHTML = `<strong>Total</strong><strong>₹${getTotal(cart)}</strong>`;
-    root.appendChild(total);
-    const checkout = document.createElement('div'); checkout.style.marginTop='12px'; checkout.innerHTML = '<a href="#checkout" class="button primary">Proceed to Checkout</a>';
-    root.appendChild(checkout);
+    listPanel.appendChild(list);
+
+    const subtotal = getTotal(cart);
+    const delivery = 49;
+    const summary = document.createElement('aside');
+    summary.className = 'cart-order-summary';
+    summary.innerHTML = `
+      <div class="summary-heading">
+        <span class="eyebrow">Payment</span>
+        <h3>Order Summary</h3>
+      </div>
+      <div class="summary-line"><span>Subtotal</span><strong>${formatCurrency(subtotal)}</strong></div>
+      <div class="summary-line"><span>Delivery</span><strong>${formatCurrency(delivery)}</strong></div>
+      <div class="summary-total"><strong>Total</strong><strong>${formatCurrency(subtotal + delivery)}</strong></div>
+      <a href="checkout.html" class="button primary">Proceed to Checkout</a>
+      <a href="index.html#menu" class="button ghost">Add More Items</a>
+    `;
+
+    shell.appendChild(listPanel);
+    shell.appendChild(summary);
+    root.appendChild(shell);
   }
 
   document.addEventListener('DOMContentLoaded', ()=>{
@@ -317,6 +366,8 @@
     updateCartCount();
     renderCartPreview();
     renderCartPage();
+    populateCheckoutSummary();
+    wireCheckoutForm();
   });
 
   // Expose for debugging

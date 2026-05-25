@@ -10,20 +10,54 @@
 <body>
   <header class="navbar">
     <a class="brand" href="index.html">
-      <span class="brand-logo" aria-hidden="true">🍽</span>
+      <span class="brand-logo" aria-hidden="true">
+        <svg viewBox="0 0 64 64" width="32" height="32" fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M18 12v24" />
+          <path d="M24 12v24" />
+          <path d="M18 12c0 6 6 6 6 0" />
+          <path d="M16 42h32v8H16z" />
+          <path d="M22 42c2-6 8-10 10-10s8 4 10 10" />
+        </svg>
+      </span>
       <span>Tasty Treats</span>
     </a>
+    <input class="theme-toggle" type="checkbox" id="theme-toggle" aria-label="Toggle dark mode">
+    <label class="theme-toggle-label" for="theme-toggle" title="Toggle dark mode">
+      <span class="toggle-icon sun">☀</span>
+      <span class="toggle-icon moon">☾</span>
+    </label>
+    <input class="nav-toggle" type="checkbox" id="nav-toggle" aria-label="Toggle navigation menu">
+    <label class="nav-toggle-label" for="nav-toggle" aria-hidden="true">
+      <span></span>
+      <span></span>
+      <span></span>
+    </label>
     <nav class="nav-links" aria-label="Primary navigation">
       <a href="index.html">Home</a>
-      <a href="index.html#menu">Menu</a>
+      <a href="index.html#menu">Food Menu</a>
       <a href="cart.html">Cart <span id="cart-count-badge" class="cart-badge"></span></a>
       <a href="checkout.html">Checkout</a>
       <a class="nav-account" href="account.html">Login / Register</a>
     </nav>
   </header>
 
-  <main class="container-fluid px-4 px-md-5 py-5">
-    <div id="cart-root"></div>
+  <main>
+    <section class="cart-page-hero">
+      <div>
+        <span class="eyebrow">Your order</span>
+        <h1>Review your cart before checkout.</h1>
+        <p>Adjust quantities, remove dishes, and see your order total before moving to delivery details.</p>
+      </div>
+      <div class="cart-page-steps" aria-label="Checkout progress">
+        <span class="active">Cart</span>
+        <span>Details</span>
+        <span>Done</span>
+      </div>
+    </section>
+
+    <section class="section cart-page-section">
+      <div id="cart-root"></div>
+    </section>
   </main>
 
   <footer class="footer" id="footer">

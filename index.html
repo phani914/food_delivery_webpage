@@ -36,8 +36,8 @@
       <a href="#">Home</a>
       <a href="#menu">Food Menu</a>
       <a href="#restaurants">Restaurants</a>
-      <a href="#cart">Cart <span id="cart-count-badge" class="cart-badge"></span></a>
-      <a href="#checkout">Checkout</a>
+      <a href="cart.html">Cart <span id="cart-count-badge" class="cart-badge"></span></a>
+      <a href="checkout.html">Checkout</a>
       <a href="#footer">Contact</a>
       <a class="nav-account" href="account.html">Login / Register</a>
     </nav>
@@ -312,88 +312,23 @@
 
     <section class="section" id="cart">
       <div class="section-header">
-        <h2>Cart UI</h2>
-        <p>A static cart preview showing selected items, quantities, pricing, and order total.</p>
+        <h2>Order Preview</h2>
+        <p>Your cart now opens on its own page, with checkout kept separate for a cleaner ordering flow.</p>
       </div>
 
-      <div class="order-layout row g-4">
-        <aside class="cart-box col-12 col-lg-5">
+      <div class="order-preview-layout">
+        <aside class="cart-box">
           <h3>Your Cart</h3>
-          <div class="cart-item">
-            <div>
-              <strong>Margherita Pizza</strong>
-              <span>Quantity: 1</span>
-            </div>
-            <strong>₹299</strong>
-          </div>
-          <div class="cart-item">
-            <div>
-              <strong>Power Rice Bowl</strong>
-              <span>Quantity: 2</span>
-            </div>
-            <strong>₹498</strong>
-          </div>
-          <div class="cart-item">
-            <div>
-              <strong>Delivery Fee</strong>
-              <span>Standard delivery</span>
-            </div>
-            <strong>₹49</strong>
-          </div>
-          <div class="cart-total">
-            <strong>Total</strong>
-            <strong>₹846</strong>
-          </div>
         </aside>
-
-        <section class="checkout-box col-12 col-lg-7" id="checkout">
-          <h3>Checkout Form</h3>
-          <div id="checkout-summary" class="checkout-summary" aria-live="polite"></div>
-          <form class="checkout-form">
-            <div class="form-group">
-              <label for="full-name">Full Name</label>
-              <input type="text" id="full-name" name="full-name" placeholder="Alex Morgan">
-            </div>
-
-            <div class="form-group">
-              <label for="phone">Phone</label>
-              <input type="tel" id="phone" name="phone" placeholder="(555) 123-4567">
-            </div>
-
-            <div class="form-group full">
-              <label for="address">Delivery Address</label>
-              <input type="text" id="address" name="address" placeholder="123 Market Street">
-            </div>
-
-            <div class="form-group">
-              <label for="payment">Payment Method</label>
-              <select id="payment" name="payment">
-                <option>Credit Card</option>
-                <option>Debit Card</option>
-                <option>Cash on Delivery</option>
-              </select>
-            </div>
-
-            <div class="form-group">
-              <label for="time">Delivery Time</label>
-              <select id="time" name="time">
-                <option>As soon as possible</option>
-                <option>30 minutes</option>
-                <option>60 minutes</option>
-              </select>
-            </div>
-
-            <div class="form-group full">
-              <label for="notes">Order Notes</label>
-              <textarea id="notes" name="notes" placeholder="Add delivery instructions or special requests"></textarea>
-            </div>
-
-            <div class="form-group full">
-              <button id="place-order" class="button primary" type="button">Place Order</button>
-            </div>
-          </form>
-          <p class="checkout-note">This checkout form is static for now and does not process orders.</p>
-        </section>
+        <div class="order-preview-copy">
+          <span class="eyebrow">Two simple steps</span>
+          <h3>Review first, checkout after.</h3>
+          <p>Use the cart page to adjust dishes and the checkout page to add delivery details.</p>
+          <div class="hero-actions">
+            <a class="button primary" href="cart.html">Open Cart</a>
+            <a class="button ghost" href="checkout.html">Go to Checkout</a>
+          </div>
+        </div>
       </div>
     </section>
   </main>
@@ -409,8 +344,8 @@
         <h4>Quick Links</h4>
         <a href="#menu">Food Menu</a>
         <a href="#restaurants">Restaurants</a>
-        <a href="#cart">Cart</a>
-        <a href="#checkout">Checkout</a>
+        <a href="cart.html">Cart</a>
+        <a href="checkout.html">Checkout</a>
       </div>
 
       <div>

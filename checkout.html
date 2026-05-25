@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Checkout - Tasty Treats</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <header class="navbar">
+    <a class="brand" href="index.html">
+      <span class="brand-logo" aria-hidden="true">
+        <svg viewBox="0 0 64 64" width="32" height="32" fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M18 12v24" />
+          <path d="M24 12v24" />
+          <path d="M18 12c0 6 6 6 6 0" />
+          <path d="M16 42h32v8H16z" />
+          <path d="M22 42c2-6 8-10 10-10s8 4 10 10" />
+        </svg>
+      </span>
+      <span>Tasty Treats</span>
+    </a>
+    <input class="theme-toggle" type="checkbox" id="theme-toggle" aria-label="Toggle dark mode">
+    <label class="theme-toggle-label" for="theme-toggle" title="Toggle dark mode">
+      <span class="toggle-icon sun">☀</span>
+      <span class="toggle-icon moon">☾</span>
+    </label>
+    <input class="nav-toggle" type="checkbox" id="nav-toggle" aria-label="Toggle navigation menu">
+    <label class="nav-toggle-label" for="nav-toggle" aria-hidden="true">
+      <span></span>
+      <span></span>
+      <span></span>
+    </label>
+    <nav class="nav-links" aria-label="Primary navigation">
+      <a href="index.html">Home</a>
+      <a href="index.html#menu">Food Menu</a>
+      <a href="cart.html">Cart <span id="cart-count-badge" class="cart-badge"></span></a>
+      <a href="checkout.html">Checkout</a>
+      <a class="nav-account" href="account.html">Login / Register</a>
+    </nav>
+  </header>
+
+  <main>
+    <section class="cart-page-hero checkout-page-hero">
+      <div>
+        <span class="eyebrow">Checkout</span>
+        <h1>Confirm delivery and payment details.</h1>
+        <p>Complete your order with clear contact details, preferred delivery time, and any kitchen notes.</p>
+      </div>
+      <div class="cart-page-steps" aria-label="Checkout progress">
+        <span>Cart</span>
+        <span class="active">Details</span>
+        <span>Done</span>
+      </div>
+    </section>
+
+    <section class="section checkout-page-section">
+      <div class="checkout-page-layout">
+        <section class="checkout-box checkout-panel">
+          <div class="panel-heading">
+            <span class="eyebrow">Delivery form</span>
+            <h2>Where should we send it?</h2>
+          </div>
+
+          <form class="checkout-form">
+            <div class="form-group">
+              <label for="full-name">Full Name</label>
+              <input type="text" id="full-name" name="full-name" placeholder="Alex Morgan" autocomplete="name">
+            </div>
+
+            <div class="form-group">
+              <label for="phone">Phone</label>
+              <input type="tel" id="phone" name="phone" placeholder="+91 98765 43210" autocomplete="tel">
+            </div>
+
+            <div class="form-group full">
+              <label for="address">Delivery Address</label>
+              <input type="text" id="address" name="address" placeholder="Apartment, street, city" autocomplete="street-address">
+            </div>
+
+            <div class="form-group">
+              <label for="payment">Payment Method</label>
+              <select id="payment" name="payment">
+                <option>Cash on Delivery</option>
+                <option>Credit Card</option>
+                <option>Debit Card</option>
+                <option>UPI</option>
+              </select>
+            </div>
+
+            <div class="form-group">
+              <label for="time">Delivery Time</label>
+              <select id="time" name="time">
+                <option>As soon as possible</option>
+                <option>30 minutes</option>
+                <option>60 minutes</option>
+                <option>Schedule for later</option>
+              </select>
+            </div>
+
+            <div class="form-group full">
+              <label for="notes">Order Notes</label>
+              <textarea id="notes" name="notes" placeholder="Add delivery instructions or special requests"></textarea>
+            </div>
+
+            <div class="form-group full checkout-submit-row">
+              <a class="button ghost" href="cart.html">Back to Cart</a>
+              <button id="place-order" class="button primary" type="button">Place Order</button>
+            </div>
+          </form>
+        </section>
+
+        <aside class="checkout-summary-panel">
+          <div id="checkout-summary" class="checkout-summary" aria-live="polite"></div>
+        </aside>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer" id="footer">
+    <div class="footer-bottom">
+      <p>© 2026 Tasty Treats. All rights reserved.</p>
+    </div>
+  </footer>
+
+  <script src="js/cart.js"></script>
+</body>
+</html>
