@@ -1050,13 +1050,27 @@ textarea {
 
 .account-layout {
   display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
+  grid-template-columns: minmax(280px, 0.92fr) minmax(320px, 1.08fr);
   gap: 24px;
+  max-width: 1120px;
+  margin: 0 auto;
   align-items: start;
 }
 
 .account-card {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  min-height: 100%;
   padding: 28px;
+}
+
+.account-card--login {
+  grid-column: 1;
+}
+
+.account-card--register {
+  grid-column: 2;
 }
 
 .account-card h2 {
@@ -1073,6 +1087,13 @@ textarea {
 .account-form {
   display: grid;
   gap: 16px;
+  flex: 1;
+  align-content: start;
+}
+
+.account-form .button {
+  width: 100%;
+  margin-top: 4px;
 }
 
 .form-row {
@@ -1247,6 +1268,11 @@ textarea {
   .account-layout,
   .order-layout {
     grid-template-columns: 1fr;
+  }
+
+  .account-card--login,
+  .account-card--register {
+    grid-column: 1;
   }
 }
 
