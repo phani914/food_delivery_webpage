@@ -21,11 +21,6 @@
       </span>
       <span>Tasty Treats</span>
     </a>
-    <input class="theme-toggle" type="checkbox" id="theme-toggle" aria-label="Toggle dark mode">
-    <label class="theme-toggle-label" for="theme-toggle" title="Toggle dark mode">
-      <span class="toggle-icon sun">☀</span>
-      <span class="toggle-icon moon">☾</span>
-    </label>
     <input class="nav-toggle" type="checkbox" id="nav-toggle" aria-label="Toggle navigation menu">
     <label class="nav-toggle-label" for="nav-toggle" role="button" aria-label="Open navigation menu">
       <span></span>
@@ -36,12 +31,18 @@
       <a href="#" aria-current="page">Home</a>
       <a href="#menu">Food Menu</a>
       <a href="#restaurants">Restaurants</a>
+      <a href="#offers">Offers</a>
       <a href="cart.html">Cart <span id="cart-count-badge" class="cart-badge"></span></a>
       <a href="checkout.html">Checkout</a>
       <a href="#footer">Contact</a>
       <a class="nav-account" href="account.html">Login / Register</a>
     </nav>
   </header>
+  <input class="theme-toggle" type="checkbox" id="theme-toggle" aria-label="Toggle dark mode">
+  <label class="theme-toggle-label" for="theme-toggle" title="Toggle dark mode">
+    <span class="toggle-icon sun">☀</span>
+    <span class="toggle-icon moon">☾</span>
+  </label>
 
   <main>
     <section class="hero">
@@ -310,6 +311,93 @@
       </div>
     </section>
 
+    <section class="section" id="offers">
+      <div class="section-header">
+        <h2>Special Promo Offers</h2>
+        <p>Pick a deal before checkout and save on favorites, family orders, and late-night cravings.</p>
+      </div>
+
+      <div class="promo-grid">
+        <article class="promo-card" data-code="WELCOME20" data-type="percent" data-value="20" data-min="399">
+          <span class="eyebrow">New customer</span>
+          <h3>20% off your first order</h3>
+          <p>Use WELCOME20 on any cart above ₹399.</p>
+          <div class="promo-meta">
+            <strong>WELCOME20</strong>
+            <span>Max discount ₹150</span>
+          </div>
+          <button class="button primary apply-promo" type="button">Apply Offer</button>
+        </article>
+
+        <article class="promo-card" data-code="FAMILY100" data-type="flat" data-value="100" data-min="799">
+          <span class="eyebrow">Family meal</span>
+          <h3>₹100 off large orders</h3>
+          <p>Perfect for dinner plans with a cart value above ₹799.</p>
+          <div class="promo-meta">
+            <strong>FAMILY100</strong>
+            <span>Flat savings</span>
+          </div>
+          <button class="button primary apply-promo" type="button">Apply Offer</button>
+        </article>
+
+        <article class="promo-card" data-code="FREEDEL" data-type="delivery" data-value="49" data-min="0">
+          <span class="eyebrow">Delivery deal</span>
+          <h3>Free delivery today</h3>
+          <p>Remove the delivery fee from your next checkout.</p>
+          <div class="promo-meta">
+            <strong>FREEDEL</strong>
+            <span>Save ₹49</span>
+          </div>
+          <button class="button primary apply-promo" type="button">Apply Offer</button>
+        </article>
+      </div>
+    </section>
+
+    <section class="section alt" id="subscriptions">
+      <div class="section-header">
+        <h2>Monthly Subscription Packs</h2>
+        <p>Choose a monthly meal plan for regular savings, priority delivery, and easier repeat ordering.</p>
+      </div>
+
+      <div class="subscription-grid">
+        <article class="subscription-card" data-plan="Snack Saver" data-price="499">
+          <span class="eyebrow">Starter</span>
+          <h3>Snack Saver</h3>
+          <div class="subscription-price">₹499<span>/month</span></div>
+          <ul>
+            <li>5 free deliveries</li>
+            <li>10% off snacks and desserts</li>
+            <li>Weekend flash offers</li>
+          </ul>
+          <button class="button ghost choose-plan" type="button">Choose Pack</button>
+        </article>
+
+        <article class="subscription-card featured" data-plan="Daily Delight" data-price="999">
+          <span class="eyebrow">Most popular</span>
+          <h3>Daily Delight</h3>
+          <div class="subscription-price">₹999<span>/month</span></div>
+          <ul>
+            <li>15 free deliveries</li>
+            <li>15% off all menu items</li>
+            <li>Priority checkout support</li>
+          </ul>
+          <button class="button primary choose-plan" type="button">Choose Pack</button>
+        </article>
+
+        <article class="subscription-card" data-plan="Family Feast" data-price="1799">
+          <span class="eyebrow">Family</span>
+          <h3>Family Feast</h3>
+          <div class="subscription-price">₹1799<span>/month</span></div>
+          <ul>
+            <li>30 free deliveries</li>
+            <li>20% off family combos</li>
+            <li>Monthly surprise dessert box</li>
+          </ul>
+          <button class="button ghost choose-plan" type="button">Choose Pack</button>
+        </article>
+      </div>
+    </section>
+
     <section class="section" id="cart">
       <div class="section-header">
         <h2>Order Preview</h2>
@@ -344,6 +432,8 @@
         <h4>Quick Links</h4>
         <a href="#menu">Food Menu</a>
         <a href="#restaurants">Restaurants</a>
+        <a href="#offers">Offers</a>
+        <a href="#subscriptions">Subscriptions</a>
         <a href="cart.html">Cart</a>
         <a href="checkout.html">Checkout</a>
       </div>

@@ -1,6 +1,11 @@
 // Lightweight cart system using localStorage
 (function(){
   const STORAGE_KEY = 'tasty_cart_v1';
+  const USER_KEY = 'tasty_user_v1';
+  const USERS_KEY = 'tasty_users_v1';
+  const ORDERS_KEY = 'tasty_orders_v1';
+  const PROMO_KEY = 'tasty_promo_v1';
+  const SUBSCRIPTION_KEY = 'tasty_subscription_v1';
 
   const qs = (s, r=document) => r.querySelector(s);
   const qsa = (s, r=document) => Array.from(r.querySelectorAll(s));
@@ -12,12 +17,79 @@
 
   function saveCart(cart){ localStorage.setItem(STORAGE_KEY, JSON.stringify(cart)); }
 
+  function loadUser(){
+    try{ return JSON.parse(localStorage.getItem(USER_KEY)) || null; }
+    catch(e){ return null; }
+  }
+
+  function loadUsers(){
+    try{ return JSON.parse(localStorage.getItem(USERS_KEY)) || []; }
+    catch(e){ return []; }
+  }
+
+  function saveUsers(users){ localStorage.setItem(USERS_KEY, JSON.stringify(users)); }
+
+  function loadOrders(){
+    try{ return JSON.parse(localStorage.getItem(ORDERS_KEY)) || []; }
+    catch(e){ return []; }
+  }
+
+  function saveOrders(orders){ localStorage.setItem(ORDERS_KEY, JSON.stringify(orders)); }
+
+  function loadPromo(){
+    try{ return JSON.parse(localStorage.getItem(PROMO_KEY)) || null; }
+    catch(e){ return null; }
+  }
+
+  function savePromo(promo){
+    localStorage.setItem(PROMO_KEY, JSON.stringify(promo));
+    renderCartPreview();
+    renderCartPage();
+    populateCheckoutSummary();
+  }
+
+  function loadSubscription(){
+    try{ return JSON.parse(localStorage.getItem(SUBSCRIPTION_KEY)) || null; }
+    catch(e){ return null; }
+  }
+
+  function saveSubscription(subscription){
+    localStorage.setItem(SUBSCRIPTION_KEY, JSON.stringify(subscription));
+    renderAccountStatus();
+  }
+
+  function saveUser(user){
+    localStorage.setItem(USER_KEY, JSON.stringify(user));
+    updateAccountNav();
+    renderAccountStatus();
+  }
+
+  function logoutUser(){
+    localStorage.removeItem(USER_KEY);
+    updateAccountNav();
+    renderAccountStatus();
+  }
+
+  function isLoggedIn(){
+    return Boolean(loadUser());
+  }
+
   function uidFromTitle(title){ return title.toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/(^-|-$)/g,''); }
 
   function parsePrice(text){
     if(!text) return 0;
     const n = text.replace(/[^0-9.\-]/g,'');
     return Number(n) || 0;
+  }
+
+  function escapeHtml(value){
+    return String(value || '').replace(/[&<>"']/g, (char)=>({
+      '&': '&amp;',
+      '<': '&lt;',
+      '>': '&gt;',
+      '"': '&quot;',
+      "'": '&#39;'
+    }[char]));
   }
 
   function updateCartCount(){
@@ -44,6 +116,7 @@
     saveCart(cart);
     updateCartCount();
     renderCartPreview();
+    requestAuthAfterCartAdd();
   }
 
   function removeFromCart(id){
@@ -67,6 +140,203 @@
 
   function getTotal(cart){
     return cart.reduce((sum,it)=>sum + (it.price * it.qty), 0);
+  }
+
+  function getPromoDiscount(subtotal, delivery){
+    const promo = loadPromo();
+    if(!promo) return 0;
+    if(subtotal < (promo.min || 0)) return 0;
+    if(promo.type === 'percent') return Math.min(Math.round(subtotal * (promo.value / 100)), 150);
+    if(promo.type === 'flat') return Math.min(promo.value, subtotal);
+    if(promo.type === 'delivery') return delivery;
+    return 0;
+  }
+
+  function closeAuthPrompt(){
+    const existing = qs('#auth-required-modal');
+    if(existing) existing.remove();
+  }
+
+  function requestAuthAfterCartAdd(){
+    if(isLoggedIn() || qs('#auth-required-modal')) return;
+
+    const overlay = document.createElement('div');
+    overlay.id = 'auth-required-modal';
+    overlay.className = 'modal-overlay auth-modal-overlay';
+    overlay.setAttribute('role', 'dialog');
+    overlay.setAttribute('aria-modal', 'true');
+    overlay.setAttribute('aria-labelledby', 'auth-required-title');
+
+    const box = document.createElement('div');
+    box.className = 'modal-box auth-modal-box';
+    box.innerHTML = `
+      <button class="auth-modal-close" type="button" aria-label="Close login prompt">&times;</button>
+      <span class="eyebrow">Account required</span>
+      <h3 id="auth-required-title">Login or register to continue.</h3>
+      <p>Your item has been added to the cart. Please login or create an account before checkout.</p>
+      <div class="auth-modal-actions">
+        <a class="button primary" href="account.html?mode=login&next=checkout">Login</a>
+        <a class="button ghost" href="account.html?mode=register&next=checkout">Register</a>
+      </div>
+    `;
+
+    overlay.addEventListener('click', (event)=>{
+      if(event.target === overlay) closeAuthPrompt();
+    });
+    box.querySelector('.auth-modal-close').addEventListener('click', closeAuthPrompt);
+    document.addEventListener('keydown', function closeOnEscape(event){
+      if(event.key !== 'Escape') return;
+      closeAuthPrompt();
+      document.removeEventListener('keydown', closeOnEscape);
+    });
+
+    overlay.appendChild(box);
+    document.body.appendChild(overlay);
+    box.querySelector('.button').focus();
+  }
+
+  function showCheckoutLoginPrompt(){
+    if(qs('#auth-required-modal')) return;
+
+    const overlay = document.createElement('div');
+    overlay.id = 'auth-required-modal';
+    overlay.className = 'modal-overlay auth-modal-overlay';
+    overlay.setAttribute('role', 'dialog');
+    overlay.setAttribute('aria-modal', 'true');
+    overlay.setAttribute('aria-labelledby', 'checkout-auth-title');
+
+    const box = document.createElement('div');
+    box.className = 'modal-box auth-modal-box';
+    box.innerHTML = `
+      <button class="auth-modal-close" type="button" aria-label="Close login prompt">&times;</button>
+      <span class="eyebrow">Checkout login</span>
+      <h3 id="checkout-auth-title">Please login before placing your order.</h3>
+      <p>Your cart is ready. Sign in or register so we can attach this order to your account.</p>
+      <div class="auth-modal-actions">
+        <a class="button primary" href="account.html?mode=login&next=checkout">Login</a>
+        <a class="button ghost" href="account.html?mode=register&next=checkout">Register</a>
+      </div>
+    `;
+    overlay.addEventListener('click', (event)=>{
+      if(event.target === overlay) closeAuthPrompt();
+    });
+    box.querySelector('.auth-modal-close').addEventListener('click', closeAuthPrompt);
+    overlay.appendChild(box);
+    document.body.appendChild(overlay);
+    box.querySelector('.button').focus();
+  }
+
+  function updateAccountNav(){
+    const accountLink = qs('.nav-account');
+    if(!accountLink) return;
+    const user = loadUser();
+    accountLink.textContent = user ? `Hi, ${user.name || 'Foodie'}` : 'Login / Register';
+    accountLink.href = 'account.html';
+  }
+
+  function getAccountRedirect(){
+    const next = new URLSearchParams(window.location.search).get('next');
+    return next === 'checkout' ? 'checkout.html' : 'cart.html';
+  }
+
+  function renderAccountStatus(){
+    const accountSection = qs('.account-section');
+    if(!accountSection) return;
+
+    let status = qs('#account-status');
+    const user = loadUser();
+    const orders = user ? loadOrders().filter(order=>order.customer.email === user.email) : [];
+    const subscription = loadSubscription();
+
+    if(!status){
+      status = document.createElement('div');
+      status.id = 'account-status';
+      status.className = 'account-status';
+      accountSection.insertBefore(status, accountSection.firstElementChild);
+    }
+
+    if(!user){
+      status.innerHTML = `
+        <strong>Not logged in</strong>
+        <span>Login or register below to continue checkout and save your orders.</span>
+      `;
+      return;
+    }
+
+    const latestOrder = orders[0];
+    status.innerHTML = `
+      <div>
+        <span class="eyebrow">Signed in</span>
+        <strong>${escapeHtml(user.name)}</strong>
+        <span>${escapeHtml(user.email)}${user.phone ? ` | ${escapeHtml(user.phone)}` : ''}</span>
+        ${subscription ? `<span>Monthly pack: ${escapeHtml(subscription.plan)} - ${formatCurrency(subscription.price)}/month</span>` : '<span>No monthly pack selected.</span>'}
+        ${latestOrder ? `<span>Last order: ${latestOrder.id} - ${formatCurrency(latestOrder.total)}</span>` : '<span>No orders placed yet.</span>'}
+      </div>
+      <button class="button ghost" type="button" id="logout-button">Logout</button>
+    `;
+
+    qs('#logout-button', status).addEventListener('click', logoutUser);
+  }
+
+  function wireAccountForms(){
+    const loginCard = qs('.account-card--login');
+    const registerCard = qs('.account-card--register');
+
+    if(loginCard){
+      const loginForm = loginCard.querySelector('form');
+      const loginButton = loginCard.querySelector('.button');
+      const loginHandler = (event)=>{
+          if(event) event.preventDefault();
+          const email = qs('#login-email')?.value.trim();
+          const password = qs('#login-password')?.value;
+          if(!email || !password){ alert('Please enter your email and password to login.'); return; }
+          const existing = loadUsers().find(user=>user.email.toLowerCase() === email.toLowerCase());
+          if(!existing){ alert('No account found with this email. Please register first.'); return; }
+          if(existing.password !== password){ alert('Incorrect password. Please try again.'); return; }
+          saveUser({ name: existing.name, email: existing.email, phone: existing.phone, loggedInAt: new Date().toISOString() });
+          alert('Login successful. You can continue your order.');
+          window.location.href = getAccountRedirect();
+        };
+      if(loginForm) loginForm.addEventListener('submit', loginHandler);
+      if(loginButton) loginButton.type = 'submit';
+    }
+
+    if(registerCard){
+      const registerForm = registerCard.querySelector('form');
+      const registerButton = registerCard.querySelector('.button');
+      const registerHandler = (event)=>{
+          if(event) event.preventDefault();
+          const name = qs('#register-name')?.value.trim();
+          const email = qs('#register-email')?.value.trim();
+          const phone = qs('#register-phone')?.value.trim();
+          const password = qs('#register-password')?.value;
+          const terms = qs('.account-card--register input[name="terms"]')?.checked;
+          if(!name || !email || !password){ alert('Please enter your name, email, and password to register.'); return; }
+          if(password.length < 6){ alert('Password must be at least 6 characters.'); return; }
+          if(!terms){ alert('Please agree to the Terms of Service and Privacy Policy.'); return; }
+          const users = loadUsers();
+          if(users.some(user=>user.email.toLowerCase() === email.toLowerCase())){ alert('An account already exists with this email. Please login.'); return; }
+          const newUser = { name, email, phone, password, registeredAt: new Date().toISOString() };
+          users.push(newUser);
+          saveUsers(users);
+          saveUser({ name, email, phone, registeredAt: newUser.registeredAt });
+          alert('Registration successful. You can continue your order.');
+          window.location.href = getAccountRedirect();
+        };
+      if(registerForm) registerForm.addEventListener('submit', registerHandler);
+      if(registerButton) registerButton.type = 'submit';
+    }
+
+    const mode = new URLSearchParams(window.location.search).get('mode');
+    const target = mode === 'register' ? registerCard : mode === 'login' ? loginCard : null;
+    if(target){
+      target.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      target.classList.add('account-card-highlight');
+      const input = target.querySelector('input');
+      if(input) setTimeout(()=> input.focus(), 350);
+    }
+
+    renderAccountStatus();
   }
 
   function renderCartPreview(){
@@ -157,27 +427,49 @@
     summaryEl.appendChild(list);
     const subtotal = getTotal(cart);
     const delivery = 49;
+    const discount = getPromoDiscount(subtotal, delivery);
+    const promo = loadPromo();
     const subRow = document.createElement('div'); subRow.className = 'summary-line'; subRow.innerHTML = `<span>Subtotal</span><strong>${formatCurrency(subtotal)}</strong>`;
     const delRow = document.createElement('div'); delRow.className = 'summary-line'; delRow.innerHTML = `<span>Delivery</span><strong>${formatCurrency(delivery)}</strong>`;
-    const totRow = document.createElement('div'); totRow.className='summary-total'; totRow.innerHTML = `<strong>Total</strong><strong>${formatCurrency(subtotal + delivery)}</strong>`;
-    summaryEl.appendChild(subRow); summaryEl.appendChild(delRow); summaryEl.appendChild(totRow);
+    summaryEl.appendChild(subRow); summaryEl.appendChild(delRow);
+    if(promo){
+      const discountRow = document.createElement('div');
+      discountRow.className = 'summary-line promo-summary-line';
+      discountRow.innerHTML = `<span>Promo ${escapeHtml(promo.code)}</span><strong>-${formatCurrency(discount)}</strong>`;
+      summaryEl.appendChild(discountRow);
+    }
+    const totRow = document.createElement('div'); totRow.className='summary-total'; totRow.innerHTML = `<strong>Total</strong><strong>${formatCurrency(Math.max(0, subtotal + delivery - discount))}</strong>`;
+    summaryEl.appendChild(totRow);
   }
 
   function clearCart(){ saveCart([]); updateCartCount(); renderCartPreview(); renderCartPage(); populateCheckoutSummary(); }
 
-  function showOrderPreviewModal(orderPayload){
-    // create simple modal
-    const overlay = document.createElement('div'); overlay.className='modal-overlay'; overlay.style.position='fixed'; overlay.style.inset='0'; overlay.style.background='rgba(0,0,0,0.45)'; overlay.style.display='flex'; overlay.style.alignItems='center'; overlay.style.justifyContent='center'; overlay.style.zIndex='9999';
-    const box = document.createElement('div'); box.className='modal-box'; box.style.background='var(--surface)'; box.style.padding='18px'; box.style.borderRadius='10px'; box.style.maxWidth='520px'; box.style.width='92%';
-    const h = document.createElement('h3'); h.textContent = 'Confirm Order'; box.appendChild(h);
-    const pre = document.createElement('pre'); pre.style.whiteSpace='pre-wrap'; pre.style.maxHeight='320px'; pre.style.overflow='auto'; pre.textContent = JSON.stringify(orderPayload, null, 2); box.appendChild(pre);
-    const actions = document.createElement('div'); actions.style.display='flex'; actions.style.justifyContent='flex-end'; actions.style.gap='8px'; actions.style.marginTop='12px';
-    const cancel = document.createElement('button'); cancel.className='button'; cancel.textContent='Cancel';
-    const confirm = document.createElement('button'); confirm.className='button primary'; confirm.textContent='Confirm & Place Order';
-    cancel.addEventListener('click', ()=> overlay.remove());
-    confirm.addEventListener('click', ()=>{ overlay.remove(); clearCart(); alert('Order placed (client-side). Thank you!'); });
-    actions.appendChild(cancel); actions.appendChild(confirm); box.appendChild(actions);
-    overlay.appendChild(box); document.body.appendChild(overlay);
+  function showOrderConfirmationModal(orderPayload){
+    const overlay = document.createElement('div');
+    overlay.className = 'modal-overlay auth-modal-overlay';
+    overlay.setAttribute('role', 'dialog');
+    overlay.setAttribute('aria-modal', 'true');
+
+    const box = document.createElement('div');
+    box.className = 'modal-box order-success-modal';
+    box.innerHTML = `
+      <span class="eyebrow">Order placed</span>
+      <h3>Thanks, ${escapeHtml(orderPayload.customer.name)}.</h3>
+      <p>Your order ${escapeHtml(orderPayload.id)} has been saved. Delivery preference: ${escapeHtml(orderPayload.delivery.time)}.</p>
+      <div class="summary-line"><span>Total paid on delivery</span><strong>${formatCurrency(orderPayload.total)}</strong></div>
+      <a class="button primary" href="index.html#menu">Order More Food</a>
+    `;
+
+    overlay.appendChild(box);
+    document.body.appendChild(overlay);
+  }
+
+  function prefillCheckoutForm(){
+    const form = qs('.checkout-form');
+    const user = loadUser();
+    if(!form || !user) return;
+    if(qs('#full-name') && !qs('#full-name').value) qs('#full-name').value = user.name || '';
+    if(qs('#phone') && !qs('#phone').value) qs('#phone').value = user.phone || '';
   }
 
   function wireCheckoutForm(){
@@ -186,9 +478,11 @@
     const form = placeBtn.closest('form');
     const submitOrder = async (event)=>{
       if(event) event.preventDefault();
+      if(!isLoggedIn()){ showCheckoutLoginPrompt(); return; }
       if(form && !form.reportValidity()) return;
       const cart = loadCart();
       if(cart.length===0){ alert('Your cart is empty. Add items before checkout.'); return; }
+      const user = loadUser();
       const name = qs('#full-name')? qs('#full-name').value.trim() : '';
       const phone = qs('#phone')? qs('#phone').value.trim() : '';
       const address = qs('#address')? qs('#address').value.trim() : '';
@@ -196,14 +490,17 @@
       const time = qs('#time')? qs('#time').value : '';
       const notes = qs('#notes')? qs('#notes').value.trim() : '';
       if(!name || !phone || !address){ if(!confirm('Some contact details are empty. Continue anyway?')) return; }
-      const orderPayload = { customer: { name, phone, address }, delivery: { time, notes }, payment, items: cart, subtotal: getTotal(cart), deliveryFee: 49, total: getTotal(cart)+49, placedAt: new Date().toISOString() };
-
-      // try POST to server endpoint; fallback to preview modal
-      try{
-        const res = await fetch('/api/orders', { method: 'POST', headers: { 'Content-Type':'application/json' }, body: JSON.stringify(orderPayload) });
-        if(res.ok){ clearCart(); alert('Order submitted to server. Thank you!'); }
-        else { showOrderPreviewModal(orderPayload); }
-      }catch(e){ showOrderPreviewModal(orderPayload); }
+      const subtotal = getTotal(cart);
+      const deliveryFee = 49;
+      const promo = loadPromo();
+      const discount = getPromoDiscount(subtotal, deliveryFee);
+      const orderPayload = { id: `TT-${Date.now().toString().slice(-6)}`, customer: { name, email: user.email, phone, address }, delivery: { time, notes }, payment, items: cart, promo, discount, subtotal, deliveryFee, total: Math.max(0, subtotal + deliveryFee - discount), placedAt: new Date().toISOString() };
+      const orders = loadOrders();
+      orders.unshift(orderPayload);
+      saveOrders(orders);
+      localStorage.removeItem(PROMO_KEY);
+      clearCart();
+      showOrderConfirmationModal(orderPayload);
     };
 
     if(form) form.addEventListener('submit', submitOrder);
@@ -236,6 +533,48 @@
       });
       controls.appendChild(qtyInput); controls.appendChild(btn);
       body.appendChild(controls);
+    });
+  }
+
+  function attachPromoButtons(){
+    qsa('.apply-promo').forEach(button=>{
+      button.addEventListener('click', ()=>{
+        const card = button.closest('.promo-card');
+        if(!card) return;
+        const promo = {
+          code: card.dataset.code,
+          type: card.dataset.type,
+          value: Number(card.dataset.value) || 0,
+          min: Number(card.dataset.min) || 0,
+          appliedAt: new Date().toISOString()
+        };
+        savePromo(promo);
+        qsa('.apply-promo').forEach(item=>item.textContent = 'Apply Offer');
+        button.textContent = 'Offer Applied';
+        alert(`${promo.code} applied to your cart.`);
+      });
+    });
+  }
+
+  function attachSubscriptionButtons(){
+    qsa('.choose-plan').forEach(button=>{
+      button.addEventListener('click', ()=>{
+        if(!isLoggedIn()){
+          window.location.href = 'account.html?mode=login&next=cart';
+          return;
+        }
+        const card = button.closest('.subscription-card');
+        if(!card) return;
+        const subscription = {
+          plan: card.dataset.plan,
+          price: Number(card.dataset.price) || 0,
+          selectedAt: new Date().toISOString()
+        };
+        saveSubscription(subscription);
+        qsa('.choose-plan').forEach(item=>item.textContent = 'Choose Pack');
+        button.textContent = 'Pack Selected';
+        alert(`${subscription.plan} monthly pack selected.`);
+      });
     });
   }
 
@@ -347,6 +686,8 @@
 
     const subtotal = getTotal(cart);
     const delivery = 49;
+    const discount = getPromoDiscount(subtotal, delivery);
+    const promo = loadPromo();
     const summary = document.createElement('aside');
     summary.className = 'cart-order-summary';
     summary.innerHTML = `
@@ -356,7 +697,8 @@
       </div>
       <div class="summary-line"><span>Subtotal</span><strong>${formatCurrency(subtotal)}</strong></div>
       <div class="summary-line"><span>Delivery</span><strong>${formatCurrency(delivery)}</strong></div>
-      <div class="summary-total"><strong>Total</strong><strong>${formatCurrency(subtotal + delivery)}</strong></div>
+      ${promo ? `<div class="summary-line promo-summary-line"><span>Promo ${escapeHtml(promo.code)}</span><strong>-${formatCurrency(discount)}</strong></div>` : ''}
+      <div class="summary-total"><strong>Total</strong><strong>${formatCurrency(Math.max(0, subtotal + delivery - discount))}</strong></div>
       <a href="checkout.html" class="button primary">Proceed to Checkout</a>
       <a href="index.html#menu" class="button ghost">Add More Items</a>
     `;
@@ -377,13 +719,18 @@
   document.addEventListener('DOMContentLoaded', ()=>{
     initMenuFilters();
     attachAddButtons();
+    attachPromoButtons();
+    attachSubscriptionButtons();
     updateCartCount();
+    updateAccountNav();
+    prefillCheckoutForm();
     renderCartPreview();
     renderCartPage();
     populateCheckoutSummary();
     wireCheckoutForm();
+    wireAccountForms();
   });
 
   // Expose for debugging
-  window.TastyCart = { loadCart, saveCart, addToCart, removeFromCart, changeQty };
+  window.TastyCart = { loadCart, saveCart, addToCart, removeFromCart, changeQty, loadUser, saveUser, logoutUser, loadOrders, loadPromo, savePromo, loadSubscription };
 })();

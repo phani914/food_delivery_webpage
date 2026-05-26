@@ -21,11 +21,6 @@
       </span>
       <span>Tasty Treats</span>
     </a>
-    <input class="theme-toggle" type="checkbox" id="theme-toggle" aria-label="Toggle dark mode">
-    <label class="theme-toggle-label" for="theme-toggle" title="Toggle dark mode">
-      <span class="toggle-icon sun">☀</span>
-      <span class="toggle-icon moon">☾</span>
-    </label>
     <input class="nav-toggle" type="checkbox" id="nav-toggle" aria-label="Toggle navigation menu">
     <label class="nav-toggle-label" for="nav-toggle" role="button" aria-label="Open navigation menu">
       <span></span>
@@ -41,6 +36,11 @@
       <a class="nav-account" href="account.html" aria-current="page">Login / Register</a>
     </nav>
   </header>
+  <input class="theme-toggle" type="checkbox" id="theme-toggle" aria-label="Toggle dark mode">
+  <label class="theme-toggle-label" for="theme-toggle" title="Toggle dark mode">
+    <span class="toggle-icon sun">☀</span>
+    <span class="toggle-icon moon">☾</span>
+  </label>
 
   <main>
     <section class="account-hero">
@@ -59,12 +59,12 @@
           <form class="account-form">
             <div class="form-group">
               <label for="login-email">Email Address</label>
-              <input type="email" id="login-email" name="login-email" placeholder="you@example.com">
+              <input type="email" id="login-email" name="login-email" placeholder="you@example.com" autocomplete="email" required>
             </div>
 
             <div class="form-group">
               <label for="login-password">Password</label>
-              <input type="password" id="login-password" name="login-password" placeholder="Enter password">
+              <input type="password" id="login-password" name="login-password" placeholder="Enter password" autocomplete="current-password" required>
             </div>
 
             <div class="form-row">
@@ -75,7 +75,7 @@
               <a href="#">Forgot password?</a>
             </div>
 
-            <button class="button primary" type="button">Login</button>
+            <button class="button primary" type="submit">Login</button>
           </form>
         </article>
 
@@ -85,30 +85,30 @@
           <form class="account-form">
             <div class="form-group">
               <label for="register-name">Full Name</label>
-              <input type="text" id="register-name" name="register-name" placeholder="Alex Morgan">
+              <input type="text" id="register-name" name="register-name" placeholder="Alex Morgan" autocomplete="name" required>
             </div>
 
             <div class="form-group">
               <label for="register-email">Email Address</label>
-              <input type="email" id="register-email" name="register-email" placeholder="you@example.com">
+              <input type="email" id="register-email" name="register-email" placeholder="you@example.com" autocomplete="email" required>
             </div>
 
             <div class="form-group">
               <label for="register-phone">Phone Number</label>
-              <input type="tel" id="register-phone" name="register-phone" placeholder="+91 98765 43210">
+              <input type="tel" id="register-phone" name="register-phone" placeholder="+91 98765 43210" autocomplete="tel">
             </div>
 
             <div class="form-group">
               <label for="register-password">Create Password</label>
-              <input type="password" id="register-password" name="register-password" placeholder="Create password">
+              <input type="password" id="register-password" name="register-password" placeholder="Create password" autocomplete="new-password" minlength="6" required>
             </div>
 
             <label class="check-option">
-              <input type="checkbox" name="terms">
+              <input type="checkbox" name="terms" required>
               I agree to the Terms of Service and Privacy Policy
             </label>
 
-            <button class="button primary" type="button">Create Account</button>
+            <button class="button primary" type="submit">Create Account</button>
           </form>
         </article>
       </div>
@@ -154,5 +154,6 @@
       <p>Privacy Policy | Terms of Service</p>
     </div>
   </footer>
+  <script src="js/cart.js"></script>
 </body>
 </html>
