@@ -8,7 +8,7 @@
   <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
-  <header class="navbar">
+  <header class="navbar navbar-expand-lg">
     <a class="brand" href="index.html">
       <span class="brand-logo" aria-hidden="true">
         <svg viewBox="0 0 64 64" width="32" height="32" fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round" stroke-linejoin="round">
@@ -27,18 +27,18 @@
       <span class="toggle-icon moon">☾</span>
     </label>
     <input class="nav-toggle" type="checkbox" id="nav-toggle" aria-label="Toggle navigation menu">
-    <label class="nav-toggle-label" for="nav-toggle" aria-hidden="true">
+    <label class="nav-toggle-label" for="nav-toggle" role="button" aria-label="Open navigation menu">
       <span></span>
       <span></span>
       <span></span>
     </label>
-    <nav class="nav-links" aria-label="Primary navigation">
+    <nav class="nav-links navbar-nav" aria-label="Primary navigation">
       <a href="index.html">Home</a>
       <a href="index.html#menu">Food Menu</a>
       <a href="index.html#restaurants">Restaurants</a>
-      <a href="cart.html">Cart</a>
+      <a href="cart.html">Cart <span id="cart-count-badge" class="cart-badge"></span></a>
       <a href="checkout.html">Checkout</a>
-      <a class="nav-account" href="account.html">Login / Register</a>
+      <a class="nav-account" href="account.html" aria-current="page">Login / Register</a>
     </nav>
   </header>
 

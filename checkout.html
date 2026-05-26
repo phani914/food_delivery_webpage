@@ -8,7 +8,7 @@
   <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
-  <header class="navbar">
+  <header class="navbar navbar-expand-lg">
     <a class="brand" href="index.html">
       <span class="brand-logo" aria-hidden="true">
         <svg viewBox="0 0 64 64" width="32" height="32" fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round" stroke-linejoin="round">
@@ -27,23 +27,23 @@
       <span class="toggle-icon moon">☾</span>
     </label>
     <input class="nav-toggle" type="checkbox" id="nav-toggle" aria-label="Toggle navigation menu">
-    <label class="nav-toggle-label" for="nav-toggle" aria-hidden="true">
+    <label class="nav-toggle-label" for="nav-toggle" role="button" aria-label="Open navigation menu">
       <span></span>
       <span></span>
       <span></span>
     </label>
-    <nav class="nav-links" aria-label="Primary navigation">
+    <nav class="nav-links navbar-nav" aria-label="Primary navigation">
       <a href="index.html">Home</a>
       <a href="index.html#menu">Food Menu</a>
       <a href="cart.html">Cart <span id="cart-count-badge" class="cart-badge"></span></a>
-      <a href="checkout.html">Checkout</a>
+      <a href="checkout.html" aria-current="page">Checkout</a>
       <a class="nav-account" href="account.html">Login / Register</a>
     </nav>
   </header>
 
   <main>
     <section class="cart-page-hero checkout-page-hero">
-      <div>
+      <div class="cart-page-hero-copy">
         <span class="eyebrow">Checkout</span>
         <h1>Confirm delivery and payment details.</h1>
         <p>Complete your order with clear contact details, preferred delivery time, and any kitchen notes.</p>
@@ -55,65 +55,69 @@
       </div>
     </section>
 
-    <section class="section checkout-page-section">
-      <div class="checkout-page-layout">
-        <section class="checkout-box checkout-panel">
-          <div class="panel-heading">
-            <span class="eyebrow">Delivery form</span>
-            <h2>Where should we send it?</h2>
-          </div>
-
-          <form class="checkout-form">
-            <div class="form-group">
-              <label for="full-name">Full Name</label>
-              <input type="text" id="full-name" name="full-name" placeholder="Alex Morgan" autocomplete="name">
+    <section class="section checkout-page-section container-fluid">
+      <div class="checkout-page-layout row g-4 align-items-start">
+        <div class="col-12 col-lg-8">
+          <section class="checkout-box checkout-panel h-100">
+            <div class="panel-heading">
+              <span class="eyebrow">Delivery form</span>
+              <h2>Where should we send it?</h2>
             </div>
 
-            <div class="form-group">
-              <label for="phone">Phone</label>
-              <input type="tel" id="phone" name="phone" placeholder="+91 98765 43210" autocomplete="tel">
-            </div>
+            <form class="checkout-form row g-3">
+              <div class="form-group col-12 col-md-6">
+                <label for="full-name">Full Name</label>
+                <input type="text" id="full-name" name="full-name" placeholder="Alex Morgan" autocomplete="name" required>
+              </div>
 
-            <div class="form-group full">
-              <label for="address">Delivery Address</label>
-              <input type="text" id="address" name="address" placeholder="Apartment, street, city" autocomplete="street-address">
-            </div>
+              <div class="form-group col-12 col-md-6">
+                <label for="phone">Phone</label>
+                <input type="tel" id="phone" name="phone" placeholder="+91 98765 43210" autocomplete="tel" required>
+              </div>
 
-            <div class="form-group">
-              <label for="payment">Payment Method</label>
-              <select id="payment" name="payment">
-                <option>Cash on Delivery</option>
-                <option>Credit Card</option>
-                <option>Debit Card</option>
-                <option>UPI</option>
-              </select>
-            </div>
+              <div class="form-group col-12">
+                <label for="address">Delivery Address</label>
+                <input type="text" id="address" name="address" placeholder="Apartment, street, city" autocomplete="street-address" required>
+              </div>
 
-            <div class="form-group">
-              <label for="time">Delivery Time</label>
-              <select id="time" name="time">
-                <option>As soon as possible</option>
-                <option>30 minutes</option>
-                <option>60 minutes</option>
-                <option>Schedule for later</option>
-              </select>
-            </div>
+              <div class="form-group col-12 col-md-6">
+                <label for="payment">Payment Method</label>
+                <select id="payment" name="payment">
+                  <option>Cash on Delivery</option>
+                  <option>Credit Card</option>
+                  <option>Debit Card</option>
+                  <option>UPI</option>
+                </select>
+              </div>
 
-            <div class="form-group full">
-              <label for="notes">Order Notes</label>
-              <textarea id="notes" name="notes" placeholder="Add delivery instructions or special requests"></textarea>
-            </div>
+              <div class="form-group col-12 col-md-6">
+                <label for="time">Delivery Time</label>
+                <select id="time" name="time">
+                  <option>As soon as possible</option>
+                  <option>30 minutes</option>
+                  <option>60 minutes</option>
+                  <option>Schedule for later</option>
+                </select>
+              </div>
 
-            <div class="form-group full checkout-submit-row">
-              <a class="button ghost" href="cart.html">Back to Cart</a>
-              <button id="place-order" class="button primary" type="button">Place Order</button>
-            </div>
-          </form>
-        </section>
+              <div class="form-group col-12">
+                <label for="notes">Order Notes</label>
+                <textarea id="notes" name="notes" placeholder="Add delivery instructions or special requests"></textarea>
+              </div>
 
-        <aside class="checkout-summary-panel">
-          <div id="checkout-summary" class="checkout-summary" aria-live="polite"></div>
-        </aside>
+              <div class="form-group col-12 checkout-submit-row">
+                <a class="button ghost" href="cart.html">Back to Cart</a>
+                <button id="place-order" class="button primary" type="submit">Place Order</button>
+              </div>
+            </form>
+          </section>
+        </div>
+
+        <div class="col-12 col-lg-4">
+          <aside class="checkout-summary-panel">
+            <div id="checkout-summary" class="checkout-summary" aria-live="polite"></div>
+          </aside>
+        </div>
       </div>
     </section>
   </main>

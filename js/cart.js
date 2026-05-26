@@ -183,7 +183,10 @@
   function wireCheckoutForm(){
     const placeBtn = qs('#place-order');
     if(!placeBtn) return;
-    placeBtn.addEventListener('click', async ()=>{
+    const form = placeBtn.closest('form');
+    const submitOrder = async (event)=>{
+      if(event) event.preventDefault();
+      if(form && !form.reportValidity()) return;
       const cart = loadCart();
       if(cart.length===0){ alert('Your cart is empty. Add items before checkout.'); return; }
       const name = qs('#full-name')? qs('#full-name').value.trim() : '';
@@ -201,7 +204,10 @@
         if(res.ok){ clearCart(); alert('Order submitted to server. Thank you!'); }
         else { showOrderPreviewModal(orderPayload); }
       }catch(e){ showOrderPreviewModal(orderPayload); }
-    });
+    };
+
+    if(form) form.addEventListener('submit', submitOrder);
+    else placeBtn.addEventListener('click', submitOrder);
   }
 
 
@@ -290,7 +296,7 @@
     const cart = loadCart();
     root.innerHTML = '';
     const shell = document.createElement('div');
-    shell.className = 'cart-page-layout';
+    shell.className = 'cart-page-layout row g-4 align-items-start';
 
     if(cart.length===0){
       const empty = document.createElement('div');
@@ -306,7 +312,7 @@
     }
 
     const listPanel = document.createElement('section');
-    listPanel.className = 'cart-list-panel';
+    listPanel.className = 'cart-list-panel h-100';
     listPanel.innerHTML = '<div class="panel-heading"><span class="eyebrow">Cart items</span><h2>Your selected dishes</h2></div>';
 
     const list = document.createElement('div'); list.className = 'cart-page-list';
@@ -355,8 +361,16 @@
       <a href="index.html#menu" class="button ghost">Add More Items</a>
     `;
 
-    shell.appendChild(listPanel);
-    shell.appendChild(summary);
+    const listCol = document.createElement('div');
+    listCol.className = 'col-12 col-lg-8';
+    listCol.appendChild(listPanel);
+
+    const summaryCol = document.createElement('div');
+    summaryCol.className = 'col-12 col-lg-4';
+    summaryCol.appendChild(summary);
+
+    shell.appendChild(listCol);
+    shell.appendChild(summaryCol);
     root.appendChild(shell);
   }
 
