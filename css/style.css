@@ -1021,6 +1021,11 @@ body:has(.theme-toggle:checked) .navbar {
   gap: 18px;
 }
 
+.promo-grid--single {
+  max-width: 420px;
+  grid-template-columns: 1fr;
+}
+
 .promo-card,
 .subscription-card {
   display: grid;

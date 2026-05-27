@@ -5,6 +5,7 @@
   const USERS_KEY = 'tasty_users_v1';
   const ORDERS_KEY = 'tasty_orders_v1';
   const PROMO_KEY = 'tasty_promo_v1';
+  const PENDING_PROMO_KEY = 'tasty_pending_promo_v1';
   const SUBSCRIPTION_KEY = 'tasty_subscription_v1';
 
   const qs = (s, r=document) => r.querySelector(s);
@@ -41,6 +42,15 @@
     catch(e){ return null; }
   }
 
+  function loadPendingPromo(){
+    try{ return JSON.parse(localStorage.getItem(PENDING_PROMO_KEY)) || null; }
+    catch(e){ return null; }
+  }
+
+  function savePendingPromo(promo){ localStorage.setItem(PENDING_PROMO_KEY, JSON.stringify(promo)); }
+
+  function clearPendingPromo(){ localStorage.removeItem(PENDING_PROMO_KEY); }
+
   function savePromo(promo){
     localStorage.setItem(PROMO_KEY, JSON.stringify(promo));
     renderCartPreview();
@@ -72,6 +82,12 @@
 
   function isLoggedIn(){
     return Boolean(loadUser());
+  }
+
+  function isNewCustomer(){
+    const user = loadUser();
+    if(!user) return false;
+    return !loadOrders().some(order=>order.customer?.email?.toLowerCase() === user.email.toLowerCase());
   }
 
   function uidFromTitle(title){ return title.toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/(^-|-$)/g,''); }
@@ -226,6 +242,44 @@
     box.querySelector('.button').focus();
   }
 
+  function showOfferLoginPrompt(promo){
+    if(qs('#auth-required-modal')) return;
+    savePendingPromo(promo);
+
+    function closePendingOfferPrompt(){
+      clearPendingPromo();
+      closeAuthPrompt();
+    }
+
+    const overlay = document.createElement('div');
+    overlay.id = 'auth-required-modal';
+    overlay.className = 'modal-overlay auth-modal-overlay';
+    overlay.setAttribute('role', 'dialog');
+    overlay.setAttribute('aria-modal', 'true');
+    overlay.setAttribute('aria-labelledby', 'offer-auth-title');
+
+    const box = document.createElement('div');
+    box.className = 'modal-box auth-modal-box';
+    box.innerHTML = `
+      <button class="auth-modal-close" type="button" aria-label="Close login prompt">&times;</button>
+      <span class="eyebrow">New customer offer</span>
+      <h3 id="offer-auth-title">Login or register to unlock this offer.</h3>
+      <p>WELCOME20 is only available for new customers, so we need your account details before applying it.</p>
+      <div class="auth-modal-actions">
+        <a class="button primary" href="account.html?mode=login&next=offers">Login</a>
+        <a class="button ghost" href="account.html?mode=register&next=offers">Register</a>
+      </div>
+    `;
+
+    overlay.addEventListener('click', (event)=>{
+      if(event.target === overlay) closePendingOfferPrompt();
+    });
+    box.querySelector('.auth-modal-close').addEventListener('click', closePendingOfferPrompt);
+    overlay.appendChild(box);
+    document.body.appendChild(overlay);
+    box.querySelector('.button').focus();
+  }
+
   function updateAccountNav(){
     const accountLink = qs('.nav-account');
     if(!accountLink) return;
@@ -236,6 +290,7 @@
 
   function getAccountRedirect(){
     const next = new URLSearchParams(window.location.search).get('next');
+    if(next === 'offers') return 'index.html#offers';
     return next === 'checkout' ? 'checkout.html' : 'cart.html';
   }
 
@@ -537,23 +592,50 @@
   }
 
   function attachPromoButtons(){
+    function promoFromCard(card){
+      return {
+        code: card.dataset.code,
+        type: card.dataset.type,
+        value: Number(card.dataset.value) || 0,
+        min: Number(card.dataset.min) || 0,
+        newCustomerOnly: card.dataset.newCustomer === 'true',
+        appliedAt: new Date().toISOString()
+      };
+    }
+
+    function applyPromo(promo, button){
+      if(promo.newCustomerOnly && !isNewCustomer()){
+        alert('This offer is only for new customers placing their first order.');
+        return false;
+      }
+      savePromo(promo);
+      qsa('.apply-promo').forEach(item=>item.textContent = isLoggedIn() ? 'Apply Offer' : 'Login to Apply Offer');
+      if(button) button.textContent = 'Offer Applied';
+      alert(`${promo.code} applied to your cart.`);
+      return true;
+    }
+
     qsa('.apply-promo').forEach(button=>{
+      button.textContent = isLoggedIn() ? 'Apply Offer' : 'Login to Apply Offer';
       button.addEventListener('click', ()=>{
         const card = button.closest('.promo-card');
         if(!card) return;
-        const promo = {
-          code: card.dataset.code,
-          type: card.dataset.type,
-          value: Number(card.dataset.value) || 0,
-          min: Number(card.dataset.min) || 0,
-          appliedAt: new Date().toISOString()
-        };
-        savePromo(promo);
-        qsa('.apply-promo').forEach(item=>item.textContent = 'Apply Offer');
-        button.textContent = 'Offer Applied';
-        alert(`${promo.code} applied to your cart.`);
+        const promo = promoFromCard(card);
+        if(!isLoggedIn()){
+          showOfferLoginPrompt(promo);
+          return;
+        }
+        applyPromo(promo, button);
       });
     });
+
+    const pendingPromo = loadPendingPromo();
+    if(pendingPromo && isLoggedIn()){
+      const matchingButton = qs(`.promo-card[data-code="${pendingPromo.code}"] .apply-promo`);
+      const applied = applyPromo({ ...pendingPromo, appliedAt: new Date().toISOString() }, matchingButton);
+      clearPendingPromo();
+      if(!applied && matchingButton) matchingButton.textContent = 'Apply Offer';
+    }
   }
 
   function attachSubscriptionButtons(){
